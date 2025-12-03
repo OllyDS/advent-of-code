@@ -12,38 +12,22 @@ fn create_vec_range(range: &str) -> Vec<i64> {
     return (first_num..=last_num).collect();
 }
 
-/// Check if a number is an invalid ID (sequence repeated at least twice)
+/// Check if a number is an invalid ID (sequence repeated twice)
 fn is_invalid_id(num: i64) -> bool {
     let num_str: String = num.to_string();
+    let len: usize = num_str.len();
     
-    if num_str.len() < 2 {
-        return false; // Must have at least 2 digits
+    // Must have even length and at least 2 digits
+    if len < 2 || len % 2 != 0 {
+        return false;
     }
     
-    // Creates an inclusive range from 1 to half the string length
-    // For a pattern to repeat at least twice, it can be at most half the total length:
-    // "1111" (length 4) --> max pattern length is 2 ("11" repeated twice)
-    // "123123" (length 6) --> max pattern length is 3 ("123" repeated twice)
-    // "12341234" (length 8) --> max pattern length is 4 ("1234" repeated twice)
-    let pattern_range: Vec<usize> = (1..=(num_str.len() / 2)).collect();
-
-    // Try each possible pattern length
-    for range_num in pattern_range {
-        let pattern: &str = &num_str[0..range_num];
-        
-        // Skip patterns starting with 0
-        if pattern.starts_with('0') {
-            continue;
-        }
-        
-        // Check if repeating this pattern creates the entire string
-        let repeated: String = pattern.repeat(num_str.len() / range_num);
-        if repeated == num_str && num_str.len() / range_num >= 2 {
-            return true;
-        }
-    }
+    let mid: usize = len / 2;
+    let first_half: &str = &num_str[0..mid];
+    let second_half: &str = &num_str[mid..];
     
-    false
+    // Check if both halves are identical and first half doesn't start with 0
+    return first_half == second_half && !first_half.starts_with('0');
 }
 
 fn main() {
@@ -61,6 +45,7 @@ fn main() {
             .filter(|&&num| is_invalid_id(num))
             .sum::<i64>()
     }).sum();
+
     eprintln!("Sum of invalid IDs: {}", sum_invalid);
 }
 
