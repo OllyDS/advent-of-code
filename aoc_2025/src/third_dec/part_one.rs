@@ -4,7 +4,7 @@ fn largest_jolt_pair(bank: Vec<i128>) -> (i128, i128) {
     // First step is to find the largest number in the entire vector
     let mut left_num: i128 = 0;
     let mut left_num_idx: usize = 0;
-    // Use split_last to remove the last element as that's reserved for the left num starting point
+    // Use split_last to remove the last element as that's reserved for the right num starting point
     for (idx, &num) in bank.split_last().unwrap().1.iter().enumerate() {
         if num > left_num {
             left_num = num;
@@ -12,8 +12,8 @@ fn largest_jolt_pair(bank: Vec<i128>) -> (i128, i128) {
         }
     }
 
-    // Next we use the largest number to split the vector into two halves
     let mut right_num: i128 = 0;
+    // Use the index of the largest left number to split the vector into two halves
     let (_, remaining_bank) = bank.split_at(left_num_idx + 1);
 
     println!("remaining_bank: {:?}", remaining_bank);
